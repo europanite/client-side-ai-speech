@@ -1,10 +1,10 @@
-# [Client-Side Audio Transcription](https://github.com/europanite/client_side_audio_transcription "Client-Side Audio Transcription")
+# [Client-Side AI Speech](https://github.com/europanite/client-side-ai-speech "Client-Side AI Speech")
 
 [![License](https://img.shields.io/badge/License-Apache_2.0-blue.svg)](https://opensource.org/licenses/Apache-2.0)
 ![OS](https://img.shields.io/badge/OS-Linux%20%7C%20macOS%20%7C%20Windows-blue)
-[![CI](https://github.com/europanite/client_side_audio_transcription/actions/workflows/ci.yml/badge.svg)](https://github.com/europanite/client_side_audio_transcription/actions/workflows/ci.yml)
-[![docker](https://github.com/europanite/client_side_audio_transcription/actions/workflows/docker.yml/badge.svg)](https://github.com/europanite/client_side_audio_transcription/actions/workflows/docker.yml)
-[![pages](https://github.com/europanite/client_side_audio_transcription/actions/workflows/pages.yml/badge.svg)](https://github.com/europanite/client_side_audio_transcription/actions/workflows/pages.yml)
+[![CI](https://github.com/europanite/client-side-ai-speech/actions/workflows/ci.yml/badge.svg)](https://github.com/europanite/client-side-ai-speech/actions/workflows/ci.yml)
+[![docker](https://github.com/europanite/client-side-ai-speech/actions/workflows/docker.yml/badge.svg)](https://github.com/europanite/client-side-ai-speech/actions/workflows/docker.yml)
+[![pages](https://github.com/europanite/client-side-ai-speech/actions/workflows/pages.yml/badge.svg)](https://github.com/europanite/client-side-ai-speech/actions/workflows/pages.yml)
 
 ![React](https://img.shields.io/badge/react-%2320232a.svg?logo=react&logoColor=%2361DAFB)
 ![Jest](https://img.shields.io/badge/-jest-%23C21325?logo=jest&logoColor=white)
@@ -28,31 +28,36 @@
 
 ## PlayGround
 
-[▶ Open the app](https://europanite.github.io/client_side_audio_transcription/)
+[▶ Open the app](https://europanite.github.io/client-side-ai-speech/)
 
-Browser-based client-side audio transcription tool powered by Whisper and Transformers.js.
-This tool is completely free and safe because it runs only on your web browser.
-No installation, registration, or payment required.
+Browser-based client-side speech-to-text (Whisper) and text-to-speech (Kokoro) tool.
+The input media and text are processed by models in the browser; model, library and dictionary
+assets are downloaded on first use. No installation, registration, or payment required.
 
 ---
 
 ## 🚀 Overview
 
-This project is a client-side transcription web app built with React, TypeScript, and Vite.
-It runs Whisper directly in the browser through `@huggingface/transformers`, so media files are processed locally instead of being uploaded to a backend for transcription.
+This project is a bidirectional audio/text web app built with React, TypeScript, and Vite.
+Whisper runs locally through `@huggingface/transformers` for STT.
+Kokoro-82M with the `kokoro-js-jp` browser runtime supports English and Japanese TTS,
+including local WAV generation, playback, and download.
 
-The current implementation supports selecting a Whisper model in the UI, transcribing local media files, streaming live microphone input, loading the selected model on demand, and displaying recognized text in a read-only transcript area.
+The interface has two modes but one shared workspace: Audio on the left, Text on the right.
+STT supports media files and live microphone capture; TTS lets you edit text and generate
+playable and downloadable speech. Mobile layouts stack the Audio and Text panes.
 
 ## ✨ Features
 
 - **Client-side speech-to-text**  
   The React app calls the `automatic-speech-recognition` pipeline from `@huggingface/transformers` directly in the browser, so transcription runs entirely on the client.
 
-- **Simple 3-step workflow**  
-  The UI guides you through:
-  1. Loading the Whisper model.
-  2. Checking model status.
-  3. Uploading audio and running transcription, with clear status messages for each step.
+- **Unified STT/TTS workspace**
+  Switch between Audio → Text and Text → Audio while keeping the Audio pane on the left
+  and Text pane on the right; generated STT text is available in the TTS editor.
+- **Client-side neural text-to-speech**
+  Kokoro generates speech for English or Japanese, with WAV playback and file download.
+  The model runs locally after assets have been downloaded; synthesis is batch-based.
 
 - **Live microphone streaming transcription**  
   The app can capture microphone audio directly in the browser and transcribe it continuously without uploading audio to a server.
@@ -90,8 +95,8 @@ The current implementation supports selecting a Whisper model in the UI, transcr
 ## 🧱 Tech stack
 
 - Frontend: React + TypeScript + Vite
-- ML runtime: `@huggingface/transformers`
-- Inference task: `automatic-speech-recognition`
+- ML runtime: `@huggingface/transformers` (STT), Kokoro-82M / `kokoro-js-jp` (TTS)
+- Inference tasks: `automatic-speech-recognition` and `text-to-speech`
 - Browser audio handling: Web Audio API (`AudioContext`)
 - Testing: Jest + Testing Library
 - Container tooling: Docker + Docker Compose
@@ -107,15 +112,12 @@ The current implementation supports selecting a Whisper model in the UI, transcr
 
 The settings bar currently displays the runtime summary:
 
-- `Transformers.js + Whisper`
+- `Whisper STT + Kokoro TTS`
 
 ### 2. Model and file selection
 
-`HomeScreen.tsx` provides a 3-step UI:
-
-1. Choose a model and media file
-2. Check model status
-3. Read the transcription result
+`HomeScreen.tsx` provides a two-pane UI with a STT/TTS direction selector,
+mode-specific voice/model settings, and a shared status component.
 
 The screen includes:
 
@@ -228,22 +230,31 @@ npm test -- --ci --runInBand --coverage --verbose
 
 - [Docker Compose](https://docs.docker.com/compose/)
 
-### Run
+### Run the application
 
 ```bash
-docker compose build
-docker compose up
+docker compose up --build
 ```
 
-This starts the service on port `5173`.
+Open `http://localhost:5173/client-side-ai-speech/` in your browser.
+The Compose service serves Vite on the host loopback interface; inference and
+microphone capture still run in the browser. Stop it with `docker compose down`.
 
-## Test
+If `package-lock.json` changes and the named dependency volume is out of date,
+refresh it using `docker compose run --rm frontend npm ci`.
+
+### Type check, tests and production build
 
 ```bash
-docker compose \
--f docker-compose.test.yml up \
---build --exit-code-from \
-frontend_test
+docker compose -f docker-compose.test.yml run --build --rm frontend_test \
+  sh -lc 'npm ci && npx tsc --noEmit && npm test -- --ci --runInBand && npm run build:demo'
+```
+
+To run just the existing test service (with coverage and JSON reports):
+
+```bash
+docker compose -f docker-compose.test.yml up --build \
+  --abort-on-container-exit --exit-code-from frontend_test
 ```
 
 ## Notes and limitations

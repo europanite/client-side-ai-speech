@@ -5,7 +5,7 @@ const SettingsBar: React.FC = () => {
     <div className="settings-bar">
       <div className="settings-main">
         <div className="settings-label">Runtime</div>
-        <div className="settings-value">Transformers.js + Whisper</div>
+        <div className="settings-value">Whisper STT + Kokoro TTS</div>
       </div>
     </div>
   );

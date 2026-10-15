@@ -11,11 +11,11 @@ const App: React.FC = () => {
           <div>
             <a href={REPO_URL} target="_blank" rel="noreferrer">
               <h1 className="app-title">
-                Client-Side Audio Transcription
+                Client-Side AI Speech
               </h1>
             </a>
             <p className="app-subtitle">
-              A Browser-Based AI Audio Transcription Playground Powered by Whisper. No installation, No registration, or No payment required.
+              Convert audio to text with Whisper and text to speech with Kokoro in your browser. No account required.
             </p>
           </div>
           <SettingsBar />
