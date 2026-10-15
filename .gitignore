@@ -38,3 +38,7 @@ dist-ssr/
 build/
 frontend/app/dist/
 frontend_vite_template_*
+# Demo video production: local only
+/video/
+/docker-compose.video*.yml
+/VIDEO.md

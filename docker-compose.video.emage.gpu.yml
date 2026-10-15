@@ -1,3 +1,0 @@
-services:
-  emage-infer:
-    gpus: all
