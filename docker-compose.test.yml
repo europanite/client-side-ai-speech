@@ -1,4 +1,4 @@
-name: client-side-ai-speech-test
+name: client-side-speech-ai-test
 
 services:
   frontend_test:

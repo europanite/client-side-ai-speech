@@ -1,10 +1,10 @@
-# [Client-Side AI Speech](https://github.com/europanite/client-side-ai-speech "Client-Side AI Speech")
+# [Client-Side AI Speech](https://github.com/europanite/client-side-speech-ai "Client-Side AI Speech")
 
 [![License](https://img.shields.io/badge/License-Apache_2.0-blue.svg)](https://opensource.org/licenses/Apache-2.0)
 ![OS](https://img.shields.io/badge/OS-Linux%20%7C%20macOS%20%7C%20Windows-blue)
-[![CI](https://github.com/europanite/client-side-ai-speech/actions/workflows/ci.yml/badge.svg)](https://github.com/europanite/client-side-ai-speech/actions/workflows/ci.yml)
-[![docker](https://github.com/europanite/client-side-ai-speech/actions/workflows/docker.yml/badge.svg)](https://github.com/europanite/client-side-ai-speech/actions/workflows/docker.yml)
-[![pages](https://github.com/europanite/client-side-ai-speech/actions/workflows/pages.yml/badge.svg)](https://github.com/europanite/client-side-ai-speech/actions/workflows/pages.yml)
+[![CI](https://github.com/europanite/client-side-speech-ai/actions/workflows/ci.yml/badge.svg)](https://github.com/europanite/client-side-speech-ai/actions/workflows/ci.yml)
+[![docker](https://github.com/europanite/client-side-speech-ai/actions/workflows/docker.yml/badge.svg)](https://github.com/europanite/client-side-speech-ai/actions/workflows/docker.yml)
+[![pages](https://github.com/europanite/client-side-speech-ai/actions/workflows/pages.yml/badge.svg)](https://github.com/europanite/client-side-speech-ai/actions/workflows/pages.yml)
 
 ![React](https://img.shields.io/badge/react-%2320232a.svg?logo=react&logoColor=%2361DAFB)
 ![Jest](https://img.shields.io/badge/-jest-%23C21325?logo=jest&logoColor=white)
@@ -28,7 +28,7 @@
 
 ## PlayGround
 
-[▶ Open the app](https://europanite.github.io/client-side-ai-speech/)
+[▶ Open the app](https://europanite.github.io/client-side-speech-ai/)
 
 Browser-based client-side speech-to-text (Whisper) and text-to-speech (Kokoro) tool.
 The input media and text are processed by models in the browser; model, library and dictionary
@@ -236,7 +236,7 @@ npm test -- --ci --runInBand --coverage --verbose
 docker compose up --build
 ```
 
-Open `http://localhost:5173/client-side-ai-speech/` in your browser.
+Open `http://localhost:5173/client-side-speech-ai/` in your browser.
 The Compose service serves Vite on the host loopback interface; inference and
 microphone capture still run in the browser. Stop it with `docker compose down`.
 

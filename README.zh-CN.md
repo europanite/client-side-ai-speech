@@ -1,10 +1,10 @@
-# [Client-Side AI Speech](https://github.com/europanite/client-side-ai-speech "Client-Side AI Speech")
+# [Client-Side AI Speech](https://github.com/europanite/client-side-speech-ai "Client-Side AI Speech")
 
 [![License](https://img.shields.io/badge/License-Apache_2.0-blue.svg)](https://opensource.org/licenses/Apache-2.0)
 ![OS](https://img.shields.io/badge/OS-Linux%20%7C%20macOS%20%7C%20Windows-blue)
-[![CI](https://github.com/europanite/client-side-ai-speech/actions/workflows/ci.yml/badge.svg)](https://github.com/europanite/client-side-ai-speech/actions/workflows/ci.yml)
-[![docker](https://github.com/europanite/client-side-ai-speech/actions/workflows/docker.yml/badge.svg)](https://github.com/europanite/client-side-ai-speech/actions/workflows/docker.yml)
-[![pages](https://github.com/europanite/client-side-ai-speech/actions/workflows/pages.yml/badge.svg)](https://github.com/europanite/client-side-ai-speech/actions/workflows/pages.yml)
+[![CI](https://github.com/europanite/client-side-speech-ai/actions/workflows/ci.yml/badge.svg)](https://github.com/europanite/client-side-speech-ai/actions/workflows/ci.yml)
+[![docker](https://github.com/europanite/client-side-speech-ai/actions/workflows/docker.yml/badge.svg)](https://github.com/europanite/client-side-speech-ai/actions/workflows/docker.yml)
+[![pages](https://github.com/europanite/client-side-speech-ai/actions/workflows/pages.yml/badge.svg)](https://github.com/europanite/client-side-speech-ai/actions/workflows/pages.yml)
 
 ![React](https://img.shields.io/badge/react-%2320232a.svg?logo=react&logoColor=%2361DAFB)
 ![Jest](https://img.shields.io/badge/-jest-%23C21325?logo=jest&logoColor=white)
@@ -24,7 +24,7 @@
 
 !["web_ui"](./assets/images/web_ui.png)
 
- [PlayGround](https://europanite.github.io/client-side-ai-speech/)
+ [PlayGround](https://europanite.github.io/client-side-speech-ai/)
 
 一个由 Whisper 和 Transformers.js 驱动、基于浏览器的 AI 转录实验平台。
 无需安装、注册或付费。
