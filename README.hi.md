@@ -22,9 +22,13 @@
   <a href="./README.fr.md">🇫🇷 Français</a>
 </p>
 
-!["web_ui"](./assets/images/web_ui.png)
+## Demo
 
- [PlayGround](https://europanite.github.io/client-side-speech-ai/)
+[![▶ Watch the 40-second demo](https://img.youtube.com/vi/UlA1iopy9W8/hqdefault.jpg)](https://youtu.be/UlA1iopy9W8)
+
+## PlayGround
+
+[▶ Open the app](https://europanite.github.io/client-side-speech-ai/)
 
 Whisper और Transformers.js पर आधारित ब्राउज़र-आधारित AI ट्रांसक्रिप्शन प्लेग्राउंड।
 इंस्टॉलेशन, रजिस्ट्रेशन या भुगतान की आवश्यकता नहीं है।
