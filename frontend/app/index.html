@@ -2,44 +2,44 @@
 <html lang="en">
   <head>
     <meta charset="utf-8" />
-    <title>Client-Side Audio Transcription | Whisper in Your Browser</title>
+    <title>Client-Side AI Speech | STT + TTS in Your Browser</title>
     <meta
       name="description"
-      content="Transcribe audio and video locally in your browser with Whisper and Transformers.js. No installation, registration, upload, or payment required."
+      content="Transcribe media with Whisper or generate English/Japanese speech with Kokoro directly in your browser. No inference backend or account needed."
     />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <meta name="robots" content="index,follow" />
-    <link rel="icon" href="/favicon.ico" />
+    <link rel="icon" href="%BASE_URL%favicon.ico" />
 
     <link
       rel="canonical"
-      href="https://europanite.github.io/client_side_audio_transcription/"
+      href="https://europanite.github.io/client-side-ai-speech/"
     />
 
     <meta property="og:type" content="website" />
     <meta
       property="og:title"
-      content="Client-Side Audio Transcription | Whisper in Your Browser"
+      content="Client-Side AI Speech | STT + TTS in Your Browser"
     />
     <meta
       property="og:description"
-      content="A browser-based AI transcription playground powered by Whisper and Transformers.js. Media stays on your device."
+      content="A browser-based audio-to-text and text-to-speech tool powered by Whisper and Kokoro. Inference runs on your device."
     />
     <meta
       property="og:url"
-      content="https://europanite.github.io/client_side_audio_transcription/"
+      content="https://europanite.github.io/client-side-ai-speech/"
     />
 
     <script type="application/ld+json">
       {
         "@context": "https://schema.org",
         "@type": "SoftwareApplication",
-        "name": "Client-Side Audio Transcription",
+        "name": "Client-Side AI Speech",
         "applicationCategory": "MultimediaApplication",
         "operatingSystem": "Web Browser",
-        "url": "https://europanite.github.io/client_side_audio_transcription/",
-        "codeRepository": "https://github.com/europanite/client_side_audio_transcription",
-        "description": "A browser-based AI transcription playground powered by Whisper and Transformers.js. Audio and video are processed locally in the browser."
+        "url": "https://europanite.github.io/client-side-ai-speech/",
+        "codeRepository": "https://github.com/europanite/client-side-ai-speech",
+        "description": "A browser-based STT and TTS playground powered by Whisper and Kokoro. Inference runs locally in your browser."
       }
     </script>
   </head>
@@ -55,73 +55,32 @@
           <header class="app-header">
             <div>
               <a
-                href="https://github.com/europanite/client_side_audio_transcription"
+                href="https://github.com/europanite/client-side-ai-speech"
                 target="_blank"
                 rel="noreferrer"
               >
-                <h1 class="app-title">Client-Side Audio Transcription</h1>
+                <h1 class="app-title">Client-Side AI Speech</h1>
               </a>
               <p class="app-subtitle">
-                A Browser-Based AI Audio Transcription Playground Powered by
-                Whisper. No installation, registration, or payment required.
+                Convert audio to text and text to audio directly in your browser.
               </p>
             </div>
 
             <div class="settings-bar">
               <div class="settings-main">
                 <div class="settings-label">Runtime</div>
-                <div class="settings-value">Transformers.js + Whisper</div>
+                <div class="settings-value">Whisper STT + Kokoro TTS</div>
               </div>
             </div>
           </header>
 
           <main class="home">
             <section class="section">
-              <h2 class="section-title">
-                Step 1 - Choose a model and media file
-              </h2>
-              <p class="section-description">
-                Pick a multilingual Whisper model, then select an audio or video
-                file. Supported media is processed locally in your browser
-                instead of being uploaded to a transcription backend.
-              </p>
-
-              <p>
-                Available Whisper models include Tiny, Base, and Small. The app
-                supports automatic language detection as well as explicit
-                language selection.
-              </p>
-            </section>
-
-            <section class="section">
-              <h2 class="section-title">Step 2 - Model status</h2>
-              <p class="section-description">
-                The selected Whisper model is loaded in the browser through
-                Transformers.js. The interface reports loading, readiness,
-                transcription, completion, and error states.
-              </p>
-            </section>
-
-            <section class="section">
-              <h2 class="section-title">Step 3 - Transcription</h2>
-              <p class="section-description">
-                The recognized text appears in the browser after transcription
-                finishes. Audio decoding, model inference, and transcription run
-                on the client.
-              </p>
-
-              <p class="footer-note">
-                Client-Side Audio Transcription is an open-source React,
-                TypeScript, and Vite project using Whisper with
-                Transformers.js.
-              </p>
-
-              <p>
-                <a
-                  href="https://github.com/europanite/client_side_audio_transcription"
-                >
-                  View the source code and documentation on GitHub
-                </a>
+              <h2 class="section-title">Audio ↔ Text</h2>
+              <p class="section-description">Choose Whisper speech-to-text or Kokoro text-to-speech.
+                Audio files and microphone capture appear on the left, and text appears on the right.
+                WAV synthesis supports English and Japanese. Models are downloaded on first use,
+                and inference runs in the browser without uploading user content to an inference service.
               </p>
             </section>
           </main>
@@ -130,7 +89,7 @@
     </div>
 
     <noscript>
-      This application requires JavaScript to run the interactive transcription
+      This application requires JavaScript to run the interactive STT/TTS
       interface.
     </noscript>
 

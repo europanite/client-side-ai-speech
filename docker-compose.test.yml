@@ -1,9 +1,10 @@
+name: client-side-ai-speech-test
+
 services:
   frontend_test:
     build:
       context: ./frontend
       dockerfile: Dockerfile.test
-    container_name: frontend_test
     working_dir: /app
     volumes:
       - ./frontend/app:/app

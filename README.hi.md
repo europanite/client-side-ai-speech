@@ -1,10 +1,10 @@
-# [Client-Side Audio Transcription](https://github.com/europanite/client_side_audio_transcription "Client-Side Audio Transcription")
+# [Client-Side AI Speech](https://github.com/europanite/client-side-ai-speech "Client-Side AI Speech")
 
 [![License](https://img.shields.io/badge/License-Apache_2.0-blue.svg)](https://opensource.org/licenses/Apache-2.0)
 ![OS](https://img.shields.io/badge/OS-Linux%20%7C%20macOS%20%7C%20Windows-blue)
-[![CI](https://github.com/europanite/client_side_audio_transcription/actions/workflows/ci.yml/badge.svg)](https://github.com/europanite/client_side_audio_transcription/actions/workflows/ci.yml)
-[![docker](https://github.com/europanite/client_side_audio_transcription/actions/workflows/docker.yml/badge.svg)](https://github.com/europanite/client_side_audio_transcription/actions/workflows/docker.yml)
-[![pages](https://github.com/europanite/client_side_audio_transcription/actions/workflows/pages.yml/badge.svg)](https://github.com/europanite/client_side_audio_transcription/actions/workflows/pages.yml)
+[![CI](https://github.com/europanite/client-side-ai-speech/actions/workflows/ci.yml/badge.svg)](https://github.com/europanite/client-side-ai-speech/actions/workflows/ci.yml)
+[![docker](https://github.com/europanite/client-side-ai-speech/actions/workflows/docker.yml/badge.svg)](https://github.com/europanite/client-side-ai-speech/actions/workflows/docker.yml)
+[![pages](https://github.com/europanite/client-side-ai-speech/actions/workflows/pages.yml/badge.svg)](https://github.com/europanite/client-side-ai-speech/actions/workflows/pages.yml)
 
 ![React](https://img.shields.io/badge/react-%2320232a.svg?logo=react&logoColor=%2361DAFB)
 ![Jest](https://img.shields.io/badge/-jest-%23C21325?logo=jest&logoColor=white)
@@ -22,11 +22,9 @@
   <a href="./README.fr.md">🇫🇷 Français</a>
 </p>
 
-> **अनुवाद सूचना:** यह README, [`README.md`](./README.md) का अनुवादित संस्करण है। किसी भी अंतर की स्थिति में अंग्रेज़ी संस्करण को अंतिम प्रामाणिक स्रोत माना जाएगा।
-
 !["web_ui"](./assets/images/web_ui.png)
 
- [PlayGround](https://europanite.github.io/client_side_audio_transcription/)
+ [PlayGround](https://europanite.github.io/client-side-ai-speech/)
 
 Whisper और Transformers.js पर आधारित ब्राउज़र-आधारित AI ट्रांसक्रिप्शन प्लेग्राउंड।
 इंस्टॉलेशन, रजिस्ट्रेशन या भुगतान की आवश्यकता नहीं है।

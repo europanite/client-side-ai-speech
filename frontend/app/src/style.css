@@ -371,3 +371,40 @@ body {
   background-color: #111827;
   transition: width 50ms linear;
 }
+
+/* Bidirectional speech workspace: fixed Audio (left), Text (right) */
+.app-shell { max-width: 1160px; }
+.direction-tabs { display: flex; gap: 8px; }
+.direction-tab {
+  flex: 1;
+  padding: 10px 12px;
+  border-radius: 9px;
+  border: 1px solid #d1d5db;
+  background: #fff;
+  font: inherit;
+  font-size: 13px;
+  cursor: pointer;
+}
+.direction-tab.active { color: #fff; background: #111827; border-color: #111827; }
+.direction-tab:focus-visible, .btn:focus-visible, .select-input:focus-visible,
+.transcript-box:focus-visible { outline: 3px solid #2563eb; outline-offset: 2px; }
+.model-controls { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 16px; }
+.model-controls .field-group { margin-top: 0; }
+.workspace-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 16px; align-items: stretch; }
+.workspace-pane { min-width: 0; display: flex; flex-direction: column; }
+.workspace-pane .transcript-box { flex: 1; min-height: 260px; }
+.workspace-pane .button-row { flex-wrap: wrap; }
+.audio-player { display: block; width: 100%; margin-top: 12px; }
+.audio-download { display: inline-flex; align-self: start; margin-top: 12px; text-decoration: none; }
+.audio-placeholder {
+  min-height: 200px; display: grid; place-items: center; text-align: center;
+  border: 1px dashed #9ca3af; border-radius: 8px; margin-top: 10px;
+  padding: 12px; color: #4b5563; font-size: 13px;
+}
+@media (max-width: 680px) {
+  .app-shell { margin: 0; padding: 12px; border-radius: 0; }
+  .app-header { flex-wrap: wrap; }
+  .model-controls, .workspace-grid { grid-template-columns: minmax(0, 1fr); }
+  .direction-tab { padding: 10px 6px; font-size: 12px; }
+  .workspace-pane .transcript-box { min-height: 220px; }
+}

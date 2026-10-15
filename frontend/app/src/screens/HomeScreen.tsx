@@ -1,346 +1,183 @@
-import { useMemo, useRef, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { useTranscription } from "../hooks/useTranscription";
+import { useSpeechSynthesis } from "../hooks/useSpeechSynthesis";
+import { MediaPane } from "../components/MediaPane";
+import { TextPane } from "../components/TextPane";
+import { OperationStatus } from "../components/OperationStatus";
+
+type Direction = "stt" | "tts";
 
 const HomeScreen = () => {
+  const transcription = useTranscription();
+  const speech = useSpeechSynthesis();
+  const [mode, setMode] = useState<Direction>("stt");
+  const [draftText, setDraftText] = useState("");
+  const [selectedFileName, setSelectedFileName] = useState("");
+
   const {
-    status,
-    error,
-    transcript,
-    progress,
-    availableModels,
-    selectedModelId,
-    setSelectedModelId,
-    availableLanguages,
-    selectedLanguageId,
-    setSelectedLanguageId,
-    transcribeFile,
-    isStreaming,
-    isStreamStarting,
-    audioLevel,
-    startMicrophone,
-    stopStream,
-    reset,
-  } = useTranscription();
-  const [selectedFileName, setSelectedFileName] = useState<string>("");
-  const fileInputRef = useRef<HTMLInputElement | null>(null);
+    status, error, transcript, progress, availableModels, selectedModelId,
+    setSelectedModelId, availableLanguages, selectedLanguageId,
+    setSelectedLanguageId, transcribeFile, isStreaming, isStreamStarting,
+    audioLevel, startMicrophone, stopStream, reset,
+  } = transcription;
 
   const selectedModel = useMemo(
-    () =>
-      availableModels.find((model) => model.id === selectedModelId) ??
-      availableModels[0],
+    () => availableModels.find((m) => m.id === selectedModelId) ?? availableModels[0],
     [availableModels, selectedModelId]
   );
-
   const selectedLanguage = useMemo(
-    () =>
-      availableLanguages.find((language) => language.id === selectedLanguageId) ??
-      availableLanguages[0],
+    () => availableLanguages.find((l) => l.id === selectedLanguageId) ?? availableLanguages[0],
     [availableLanguages, selectedLanguageId]
   );
 
-  const handleFileChange = async (event: unknown) => {
-    const file = (event as any).target?.files?.[0] as File | undefined;
+  // Keep an STT result ready for direct conversion to TTS. Editing is enabled
+  // only in TTS mode; Whisper's transcript remains the source of truth in STT.
+  useEffect(() => {
+    if (mode === "stt") setDraftText(transcript);
+  }, [transcript, mode]);
 
-    if (!file) {
-      setSelectedFileName("");
-      return;
-    }
+  const sttBusy = ["loading-model", "starting-stream", "transcribing",
+    "streaming", "finalizing-stream"].includes(status);
+  const ttsBusy = speech.status === "loading-model" || speech.status === "synthesizing";
 
+  const switchMode = (next: Direction) => {
+    if (next === mode) return;
+    if (mode === "stt" && (isStreaming || isStreamStarting)) stopStream();
+    if (mode === "tts") speech.cancel();
+    if (next === "tts" && transcript) setDraftText(transcript);
+    setMode(next);
+  };
+
+  const handleFile = (file: File) => {
     setSelectedFileName(file.name);
-    await transcribeFile(file);
+    void transcribeFile(file);
   };
 
-  const handleChooseFileClick = () => {
-    fileInputRef.current?.click();
-  };
-
-  const handleStartMicrophoneClick = () => {
+  const handleMicrophone = () => {
     setSelectedFileName("");
-    if (fileInputRef.current) {
-      fileInputRef.current.value = "";
-    }
-    // Fire-and-forget: the next render can enable Stop immediately while the
-    // worker loads Whisper and microphone permission is requested.
     void startMicrophone();
   };
 
-  const handleStopMicrophoneClick = () => {
-    // stopStream performs the immediate capture stop synchronously and queues
-    // buffered-audio finalization separately.
-    stopStream();
-  };
-
-  const handleClearClick = () => {
-    reset();
-    setSelectedFileName("");
-    if (fileInputRef.current) {
-      fileInputRef.current.value = "";
+  const clear = () => {
+    if (mode === "stt") {
+      reset();
+      setSelectedFileName("");
+      setDraftText("");
+    } else {
+      speech.reset();
+      setDraftText("");
     }
   };
 
-  const isBusy =
-    status === "loading-model" ||
-    status === "starting-stream" ||
-    status === "transcribing" ||
-    status === "streaming" ||
-    status === "finalizing-stream";
-
-  const canStopMicrophone = isStreamStarting || isStreaming;
-
-  const statusLabel = (() => {
+  const sttStatusLabel = (() => {
     switch (status) {
-      case "idle":
-        return "Idle - choose a model, then select a media file or start the microphone.";
-      case "loading-model":
-        return `Loading ${selectedModel.label} Whisper into this browser (first load can be slow)...`;
-      case "ready":
-        return `${selectedModel.label} model loaded. Ready to transcribe.`;
-      case "starting-stream":
-        return "Waiting for microphone permission and preparing live capture...";
-      case "transcribing":
-        return selectedLanguageId === "auto"
-          ? "Transcribing buffered audio locally with automatic language detection..."
-          : `Transcribing buffered audio locally as ${selectedLanguage.label}...`;
-      case "streaming":
-        return selectedLanguageId === "auto"
-          ? "Listening to the live audio stream and transcribing locally..."
-          : `Listening to the live audio stream and transcribing locally as ${selectedLanguage.label}...`;
-      case "finalizing-stream":
-        return "Microphone stopped. Finishing transcription of buffered audio...";
-      case "done":
-        return "Transcription finished.";
-      case "error":
-        return "Error - see message below.";
-      default:
-        return "";
+      case "idle": return "Choose a file or start the microphone.";
+      case "loading-model": return `Loading ${selectedModel?.label ?? "Whisper"} locally...`;
+      case "ready": return "Whisper is ready.";
+      case "starting-stream": return "Preparing microphone capture...";
+      case "transcribing": return selectedLanguageId === "auto"
+        ? "Transcribing locally (automatic language detection)..."
+        : `Transcribing locally as ${selectedLanguage?.label ?? "the selected language"}...`;
+      case "streaming": return "Listening to live microphone audio...";
+      case "finalizing-stream": return "Finishing buffered microphone transcription...";
+      case "done": return "Transcription finished.";
+      case "error": return "Transcription failed.";
+      default: return "";
     }
   })();
 
-  const showProgress = isBusy || progress !== null;
-  const progressPercent = progress?.percent ?? null;
-  const progressLabel = progress?.label ?? statusLabel;
+  const ttsStatusLabel = (() => {
+    switch (speech.status) {
+      case "idle": return "Enter text and generate audio.";
+      case "loading-model": return "Loading Kokoro TTS locally (first download can be large)...";
+      case "synthesizing": return "Generating speech locally...";
+      case "done": return "Speech ready. Play or download it from the Audio pane.";
+      case "error": return "Speech generation failed.";
+    }
+  })();
 
   return (
     <main className="home">
-      {/* Step 1 */}
-      <section className="section">
-        <h2 className="section-title">Step 1 - Choose a model and input</h2>
-        <p className="section-description">
-          Pick a multilingual Whisper model, then select an audio/video file or
-          start live microphone transcription. File and microphone audio are
-          processed locally in your browser.
-        </p>
+      <nav className="direction-tabs" role="group" aria-label="Conversion direction">
+        <button type="button" className={`direction-tab ${mode === "stt" ? "active" : ""}`}
+          aria-pressed={mode === "stt"} onClick={() => switchMode("stt")}>Audio → Text (STT)</button>
+        <button type="button" className={`direction-tab ${mode === "tts" ? "active" : ""}`}
+          aria-pressed={mode === "tts"} onClick={() => switchMode("tts")}>Text → Audio (TTS)</button>
+      </nav>
 
-        <div className="field-group">
-          <label className="field-label" htmlFor="whisper-model-select">
-            Whisper model
-          </label>
-          <select
-            id="whisper-model-select"
-            className="select-input"
-            value={selectedModelId}
-            onChange={(event) => setSelectedModelId(event.target.value)}
-            disabled={isBusy}
-          >
-            {availableModels.map((model) => (
-              <option key={model.id} value={model.id}>
-                {model.label} - {model.id}
-              </option>
-            ))}
-          </select>
-          <p className="helper-text">{selectedModel.description}</p>
-        </div>
-
-        <div className="field-group">
-          <label className="field-label" htmlFor="transcription-language-select">
-            Transcription language
-          </label>
-          <select
-            id="transcription-language-select"
-            className="select-input"
-            value={selectedLanguageId}
-            onChange={(event) => setSelectedLanguageId(event.target.value)}
-            disabled={isBusy}
-          >
-            {availableLanguages.map((language) => (
-              <option key={language.id} value={language.id}>
-                {language.label}
-              </option>
-            ))}
-          </select>
-          <p className="helper-text">{selectedLanguage.description}</p>
-        </div>
-
-        <div className="button-row">
-          <button
-            type="button"
-            className="btn primary"
-            onClick={handleChooseFileClick}
-            disabled={isBusy}
-          >
-            {isBusy ? "Processing..." : "Choose a media file"}
-          </button>
-          <span className="file-name">
-            {selectedFileName || "No file selected yet."}
-          </span>
-        </div>
-
-        <div className="button-row">
-          <button
-            type="button"
-            className="btn primary"
-            onClick={handleStartMicrophoneClick}
-            disabled={isBusy}
-          >
-            Start microphone
-          </button>
-          <button
-            type="button"
-            className={`btn ${canStopMicrophone ? "primary" : "secondary"}`}
-            onClick={handleStopMicrophoneClick}
-            disabled={!canStopMicrophone}
-          >
-            Stop microphone
-          </button>
-          <span className="file-name">
-            {isStreaming
-              ? "Live microphone input is active."
-              : isStreamStarting
-              ? "Preparing microphone input. You can stop now."
-              : status === "finalizing-stream"
-              ? "Microphone is stopped. Finalizing buffered audio in the worker."
-              : "Microphone is stopped."}
-          </span>
-        </div>
-
-        <div className="audio-level-row" aria-live="off">
-          <span className="audio-level-label">Mic level</span>
-          <div
-            className="audio-level-meter"
-            role="meter"
-            aria-label="Microphone input level"
-            aria-valuemin={0}
-            aria-valuemax={100}
-            aria-valuenow={Math.round(audioLevel * 100)}
-          >
-            <div
-              className="audio-level-fill"
-              style={{ width: `${Math.round(audioLevel * 100)}%` }}
-            />
-          </div>
-          <span className="audio-level-value">
-            {isStreaming ? `${Math.round(audioLevel * 100)}%` : "--"}
-          </span>
-        </div>
-
-        <input
-          ref={fileInputRef}
-          type="file"
-          accept="audio/*,video/mp4,video/webm,video/ogg,video/x-matroska,video/matroska,.mp4,.webm,.ogv,.m4v,.mkv"
-          style={{ display: "none" }}
-          onChange={handleFileChange}
-        />
-      </section>
-
-      {/* Step 2 */}
-      <section className="section">
-        <h2 className="section-title">Step 2 - Model status</h2>
-        <div className="status-row">
-          {(status === "loading-model" ||
-            status === "starting-stream" ||
-            status === "transcribing" ||
-            status === "streaming" ||
-            status === "finalizing-stream") && (
-            <span className="spinner" aria-hidden="true" />
-          )}
-          <span className="status-text">{statusLabel}</span>
-        </div>
-
-        {showProgress && (
-          <div className="progress-block">
-            <div className="progress-meta">
-              <span>{progressLabel}</span>
-              <span className="progress-value">
-                {progressPercent === null ? "Working..." : `${progressPercent}%`}
-              </span>
+      <section className="section model-controls" aria-label="Model settings">
+        {mode === "stt" ? (
+          <>
+            <div className="field-group">
+              <label className="field-label" htmlFor="whisper-model-select">Whisper model</label>
+              <select id="whisper-model-select" className="select-input"
+                value={selectedModelId} onChange={(event) => setSelectedModelId(event.target.value)}
+                disabled={sttBusy}>
+                {availableModels.map((model) => (
+                  <option key={model.id} value={model.id}>{model.label} - {model.id}</option>
+                ))}
+              </select>
+              <p className="helper-text">{selectedModel?.description}</p>
             </div>
-            <div
-              className="progress-track"
-              role="progressbar"
-              aria-label="Transcription progress"
-              aria-valuemin={0}
-              aria-valuemax={100}
-              aria-valuenow={progressPercent ?? undefined}
-              aria-valuetext={
-                progressPercent === null
-                  ? progressLabel
-                  : `${progressLabel} ${progressPercent}%`
-              }
-            >
-              <div
-                className={`progress-fill ${
-                  progressPercent === null ? "indeterminate" : ""
-                }`}
-                style={
-                  progressPercent === null
-                    ? undefined
-                    : { width: `${progressPercent}%` }
-                }
-              />
+            <div className="field-group">
+              <label className="field-label" htmlFor="transcription-language-select">Transcription language</label>
+              <select id="transcription-language-select" className="select-input"
+                value={selectedLanguageId} onChange={(event) => setSelectedLanguageId(event.target.value)}
+                disabled={sttBusy}>
+                {availableLanguages.map((language) => (
+                  <option key={language.id} value={language.id}>{language.label}</option>
+                ))}
+              </select>
+              <p className="helper-text">{selectedLanguage?.description}</p>
             </div>
+          </>
+        ) : (
+          <div className="field-group">
+            <label className="field-label" htmlFor="tts-voice-select">TTS voice</label>
+            <select id="tts-voice-select" className="select-input" value={speech.voiceId}
+              onChange={(event) => {
+                speech.reset();
+                speech.setVoiceId(event.target.value);
+              }} disabled={ttsBusy}>
+              {speech.voices.map((voice) => (
+                <option key={voice.id} value={voice.id}>{voice.label} ({voice.id})</option>
+              ))}
+            </select>
+            <p className="helper-text">Kokoro 82M (English/Japanese); model assets are downloaded once and inference runs in your browser.</p>
           </div>
         )}
-
-        {error && <p className="error-text">{error}</p>}
       </section>
 
-      {/* Step 3 */}
-      <section className="section">
-        <h2 className="section-title">Step 3 - Transcription</h2>
-        <p className="section-description">
-          The recognized text will appear below. Live input is appended every few
-          seconds as Whisper finishes each buffered window.
-        </p>
+      <div className="workspace-grid">
+        <MediaPane mode={mode} fileName={selectedFileName} busy={sttBusy}
+          streaming={isStreaming} streamStarting={isStreamStarting}
+          finalizing={status === "finalizing-stream"} audioLevel={audioLevel}
+          audioUrl={speech.audioUrl} onFile={handleFile}
+          onStartMicrophone={handleMicrophone} onStopMicrophone={stopStream} />
+        <TextPane mode={mode} value={mode === "stt" ? transcript : draftText}
+          busy={ttsBusy}
+          canClear={mode === "stt"
+            ? Boolean(transcript || error || selectedFileName || isStreaming || isStreamStarting)
+            : Boolean(draftText || speech.audioUrl || speech.error || ttsBusy)}
+          onChange={(value) => {
+            setDraftText(value);
+            speech.reset();
+          }}
+          onGenerate={() => { void speech.synthesize(draftText); }}
+          onCancel={speech.cancel} onClear={clear} />
+      </div>
 
-        <textarea
-          className="transcript-box"
-          value={transcript}
-          readOnly
-          placeholder={
-            status === "idle"
-              ? "The transcript will appear here after you select a media file or start the microphone."
-              : status === "streaming"
-              ? "Listening for speech..."
-              : transcript
-              ? ""
-              : "Transcription result is empty."
-          }
-        />
+      <OperationStatus label={mode === "stt" ? sttStatusLabel : ttsStatusLabel}
+        busy={mode === "stt" ? sttBusy : ttsBusy}
+        progress={mode === "stt" ? progress : null}
+        progressName={mode === "stt" ? "Transcription progress" : "Speech synthesis progress"}
+        error={mode === "stt" ? error : speech.error} />
 
-        <div className="button-row right">
-          <button
-            type="button"
-            className="btn secondary"
-            onClick={handleClearClick}
-            disabled={
-              !transcript &&
-              !error &&
-              !selectedFileName &&
-              !isStreaming &&
-              !isStreamStarting
-            }
-          >
-            Clear
-          </button>
-        </div>
-
-        <p className="footer-note">
-          Note: The selected Whisper model runs entirely in your browser using
-          Transformers.js. Live audio is buffered into short PCM windows before
-          inference, so the transcript has a small delay rather than true
-          token-by-token streaming.
-        </p>
-      </section>
+      <p className="footer-note">
+        STT: Whisper runs in the browser; live transcription uses short buffered windows.
+        TTS: Kokoro synthesizes WAV audio on the device after downloading the model and voice assets.
+        TTS generation is batch-based, not real-time streaming. No audio or text is sent to an inference backend.
+      </p>
     </main>
   );
 };
