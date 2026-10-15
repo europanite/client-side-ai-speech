@@ -24,7 +24,7 @@
 
 ## Demo
 
-[![▶ Watch the 40-second demo](https://img.youtube.com/vi/IsV8WGXTPN4/hqdefault.jpg)](https://youtu.be/IsV8WGXTPN4)
+[![▶ Watch the 40-second demo](https://img.youtube.com/vi/UlA1iopy9W8/hqdefault.jpg)](https://youtu.be/UlA1iopy9W8)
 
 ## PlayGround
 
@@ -52,12 +52,13 @@ playable and downloadable speech. Mobile layouts stack the Audio and Text panes.
 - **Client-side speech-to-text**  
   The React app calls the `automatic-speech-recognition` pipeline from `@huggingface/transformers` directly in the browser, so transcription runs entirely on the client.
 
-- **Unified STT/TTS workspace**
-  Switch between Audio → Text and Text → Audio while keeping the Audio pane on the left
-  and Text pane on the right; generated STT text is available in the TTS editor.
 - **Client-side neural text-to-speech**
   Kokoro generates speech for English or Japanese, with WAV playback and file download.
   The model runs locally after assets have been downloaded; synthesis is batch-based.
+
+- **Unified STT/TTS workspace**
+  Switch between Audio → Text and Text → Audio while keeping the Audio pane on the left
+  and Text pane on the right; generated STT text is available in the TTS editor.
 
 - **Live microphone streaming transcription**  
   The app can capture microphone audio directly in the browser and transcribe it continuously without uploading audio to a server.
@@ -265,7 +266,6 @@ docker compose -f docker-compose.test.yml up --build \
 - Media decoding support depends on browser codec support
 - Live microphone transcription has a short delay because audio is processed in buffered windows
 - Browser microphone permission is required for live streaming
-- The current app has no backend transcription service; transcription is performed client-side
 
 ---
 

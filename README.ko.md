@@ -22,9 +22,13 @@
   <a href="./README.fr.md">🇫🇷 Français</a>
 </p>
 
-!["web_ui"](./assets/images/web_ui.png)
+## Demo
 
- [PlayGround](https://europanite.github.io/client-side-speech-ai/)
+[![▶ Watch the 40-second demo](https://img.youtube.com/vi/UlA1iopy9W8/hqdefault.jpg)](https://youtu.be/UlA1iopy9W8)
+
+## PlayGround
+
+[▶ Open the app](https://europanite.github.io/client-side-speech-ai/)
 
 Whisper와 Transformers.js로 구동되는 브라우저 기반 AI 음성 전사 플레이그라운드입니다.
 설치, 가입, 결제가 필요하지 않습니다.
