@@ -1,4 +1,4 @@
-# [Client-Side AI Speech](https://github.com/europanite/client-side-speech-ai "Client-Side AI Speech")
+# [Client-Side Speech AI](https://github.com/europanite/client-side-speech-ai "Client-Side Speech AI")
 
 [![License](https://img.shields.io/badge/License-Apache_2.0-blue.svg)](https://opensource.org/licenses/Apache-2.0)
 ![OS](https://img.shields.io/badge/OS-Linux%20%7C%20macOS%20%7C%20Windows-blue)

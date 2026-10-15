@@ -11,7 +11,7 @@ const App: React.FC = () => {
           <div>
             <a href={REPO_URL} target="_blank" rel="noreferrer">
               <h1 className="app-title">
-                Client-Side AI Speech
+                Client-Side Speech AI
               </h1>
             </a>
             <p className="app-subtitle">
